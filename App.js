@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-import HomeFeed from './HomeFeed';
+import HomeFeed from './src/components/HomeFeed';
+import { colors }  from './src/lib/styles';
 
 export default class App extends Component {
   render() {
@@ -16,7 +17,7 @@ export default class App extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: colors.MISCELLANEOUS.CHARCOAL,
     alignItems: 'center',
     justifyContent: 'center',
   },

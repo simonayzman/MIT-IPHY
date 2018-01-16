@@ -5,14 +5,44 @@ import {
   FlatList,
   Text,
   Image,
+  ActivityIndicator,
+  Platform,
 } from 'react-native';
 
 import { colors, margins } from '../lib/styles';
+import GiphyClient from '../lib/GiphyClient';
 
 export default class HomeFeed extends Component {
 
-  getItemKey(item, index) {
-    return item;
+  constructor() {
+    super();
+
+    this.state = {
+      fetching: true,
+      fetchFailed: false,
+      gifData: [],
+    };
+
+    GiphyClient.trending()
+      .then(response => {
+        console.log(response);
+        this.setState({
+          fetching: false,
+          gifData: response.data,
+        });
+      })
+      .catch(error => {
+        console.warn(error);
+        this.setState({
+          fetching: false,
+          fetchFailed: true,
+        })
+      })
+
+  }
+
+  getItemKey(item) {
+    return item.id;
   }
 
   renderHeader() {
@@ -23,47 +53,78 @@ export default class HomeFeed extends Component {
     );
   }
 
-  renderItem() {
-    return <View style={styles.cell} />
+  renderItem = ({ item }) => { // notice difference function declaration style
+    const { images: { fixed_width, fixed_width_still } } = item;
+    const url = Platform.OS === 'ios' ? fixed_width.url : fixed_width_still.url;
+    return this.renderGif(url);
   }
 
-  renderFooter() {
+  renderLoader() {
+    return <ActivityIndicator size='large' />;
+  }
+
+  renderGif(url) {
     return (
-      <View style={styles.giphyAttributionView}>
+      <View style={styles.cell}>
         <Image
-          source={require('../images/powered_by_giphy.gif')}
-          style={styles.giphyAttribution}
+          source={{ uri: url }}
+          style={styles.gif}
           resizeMode={'contain'}
         />
       </View>
     );
   }
 
-  render() {
-    const gifData = [
-      'gifUrl1',
-      'gifUrl2',
-      'gifUrl3',
-      'gifUrl4',
-      'gifUrl5',
-      'gifUrl6',
-      'gifUrl7',
-      'gifUrl8',
-      'gifUrl9',
-      'gifUrl10',
-      'gifUrl11',
-      'gifUrl12',
-    ];
+  renderFailureGif() {
+    const failureGifUrl = 'https://media3.giphy.com/media/9J7tdYltWyXIY/giphy.gif';
+    return (
+      <Image
+        source={{ uri: failureGifUrl }}
+        style={styles.failureGif}
+        resizeMode={'contain'}
+      />
+    )
+  }
+
+  renderGifGrid() {
+    const { gifData } = this.state;
     return (
       <FlatList
-        ListHeaderComponent={this.renderHeader}
-        ListFooterComponent={this.renderFooter}
-        numColumns={3}
         keyExtractor={this.getItemKey}
         renderItem={this.renderItem}
         data={gifData}
-        style={styles.container}
       />
+    );
+  }
+
+  renderFooter() {
+    return (
+      <Image
+        source={require('../images/powered_by_giphy.gif')}
+        style={styles.giphyAttribution}
+        resizeMode={'contain'}
+      />
+    );
+  }
+
+  render() {
+    const { fetching, fetchFailed } = this.state;
+
+    let content;
+    if (fetching === true) {
+      content = this.renderLoader();
+    } else if (fetchFailed === true) {
+      content = this.renderFailureGif();
+    } else {
+      content = this.renderGifGrid();
+    }
+
+    return (
+      <View style={styles.container}>
+        {this.renderHeader()}
+        {content}
+        {this.renderFooter()}
+      </View>
     );
   }
 }
@@ -71,13 +132,12 @@ export default class HomeFeed extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: 'space-between',
   },
   cell: {
-    height: 100,
-    width: 100,
+    flex: 1,
     marginHorizontal: margins.HORIZONTAL.GUTTER,
-    marginVertical: margins.VERTICAL.MEDIUM,
-    backgroundColor: colors.MIT.RED,
+    marginVertical: 3,
   },
   header: {
     alignItems: 'center',
@@ -97,10 +157,16 @@ const styles = StyleSheet.create({
       height: 2,
     }
   },
-  giphyAttributionView: {
-    marginTop: margins.VERTICAL.LARGE,
+  failureGif: {
+    width: 400,
+    height: 500,
+  },
+  gif: {
+    width: 300,
+    height: 200,
   },
   giphyAttribution: {
+    marginTop: margins.VERTICAL.LARGE,
     height: 50,
     width: 350,
     alignSelf: 'center',

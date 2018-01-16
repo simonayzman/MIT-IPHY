@@ -7,6 +7,10 @@ import {
 
 export default class HomeFeed extends Component {
 
+  getItemKey(item, index) {
+    return item;
+  }
+
   renderItem() {
     return <View style={styles.cell} />
   }
@@ -15,6 +19,7 @@ export default class HomeFeed extends Component {
     const gifData = ['sameGifUrl1', 'sameGifUrl2', 'sameGifUrl3', 'sameGifUrl4'];
     return (
       <FlatList
+        keyExtractor={this.getItemKey}
         renderItem={this.renderItem}
         data={gifData}
         style={styles.container}

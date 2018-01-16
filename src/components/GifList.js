@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import {
   StyleSheet,
   View,
@@ -10,6 +11,28 @@ import {
 import { colors, margins } from '../lib/styles';
 
 export default class GifList extends Component {
+
+  static propTypes = {
+    limit: PropTypes.number,
+    data: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.string.isRequired,
+        images: PropTypes.shape({
+          fixed_width: PropTypes.shape({
+            url: PropTypes.string.isRequired,
+          }).isRequired,
+          fixed_width_still: PropTypes.shape({
+            url: PropTypes.string.isRequired,
+          }).isRequired,
+        }).isRequired,
+      })
+    ).isRequired,
+  }
+
+  static defaultProps = {
+    limit: 20,
+    data: [],
+  };
 
   getItemKey(item) {
     return item.id;
@@ -34,12 +57,13 @@ export default class GifList extends Component {
   }
 
   render() {
-    const data = [];
+    const { data, limit } = this.props;
+    const limitedData = data.slice(0, limit);
     return (
       <FlatList
         keyExtractor={this.getItemKey}
         renderItem={this.renderItem}
-        data={data}
+        data={limitedData}
       />
     );
   }

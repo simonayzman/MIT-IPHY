@@ -69,7 +69,13 @@ export default class HomeFeed extends Component {
   }
 
   renderGifList() {
-    return <GifList />;
+    const { gifData } = this.state;
+    return (
+      <GifList
+        limit={10}
+        data={gifData}
+      />
+    );
   }
 
   renderFooter() {

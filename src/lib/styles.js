@@ -16,6 +16,7 @@ const margins = {
   },
   VERTICAL: {
     SMALL: 5,
+    MEDIUM: 10,
     LARGE: 15,
     STATUS_BAR: 25,
   },

@@ -2,15 +2,14 @@ import React, { Component } from 'react';
 import {
   StyleSheet,
   View,
-  FlatList,
   Text,
   Image,
   ActivityIndicator,
-  Platform,
 } from 'react-native';
 
 import { colors, margins } from '../lib/styles';
 import GiphyClient from '../lib/GiphyClient';
+import GifList from './GifList';
 
 export default class HomeFeed extends Component {
 
@@ -46,10 +45,6 @@ export default class HomeFeed extends Component {
       })
   }
 
-  getItemKey(item) {
-    return item.id;
-  }
-
   renderHeader() {
     return (
       <View style={styles.header}>
@@ -58,26 +53,8 @@ export default class HomeFeed extends Component {
     );
   }
 
-  renderItem = ({ item }) => { // notice difference function declaration style
-    const { images: { fixed_width, fixed_width_still } } = item;
-    const url = Platform.OS === 'ios' ? fixed_width.url : fixed_width_still.url;
-    return this.renderGif(url);
-  }
-
   renderLoader() {
     return <ActivityIndicator size='large' />;
-  }
-
-  renderGif(url) {
-    return (
-      <View style={styles.cell}>
-        <Image
-          source={{ uri: url }}
-          style={styles.gif}
-          resizeMode={'contain'}
-        />
-      </View>
-    );
   }
 
   renderFailureGif() {
@@ -91,15 +68,8 @@ export default class HomeFeed extends Component {
     )
   }
 
-  renderGifGrid() {
-    const { gifData } = this.state;
-    return (
-      <FlatList
-        keyExtractor={this.getItemKey}
-        renderItem={this.renderItem}
-        data={gifData}
-      />
-    );
+  renderGifList() {
+    return <GifList />;
   }
 
   renderFooter() {
@@ -121,7 +91,7 @@ export default class HomeFeed extends Component {
     } else if (fetchFailed === true) {
       content = this.renderFailureGif();
     } else {
-      content = this.renderGifGrid();
+      content = this.renderGifList();
     }
 
     return (
@@ -138,11 +108,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'space-between',
-  },
-  cell: {
-    flex: 1,
-    marginHorizontal: margins.HORIZONTAL.GUTTER,
-    marginVertical: 3,
   },
   header: {
     alignItems: 'center',
@@ -165,10 +130,6 @@ const styles = StyleSheet.create({
   failureGif: {
     width: 400,
     height: 500,
-  },
-  gif: {
-    width: 300,
-    height: 200,
   },
   giphyAttribution: {
     marginTop: margins.VERTICAL.LARGE,

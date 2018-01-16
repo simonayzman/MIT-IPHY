@@ -18,10 +18,16 @@ export default class HomeFeed extends Component {
     super();
 
     this.state = {
-      fetching: true,
+      fetching: false,
       fetchFailed: false,
       gifData: [],
     };
+  }
+
+  componentDidMount() {
+    this.setState({
+      fetching: true,
+    });
 
     GiphyClient.trending()
       .then(response => {
@@ -38,7 +44,6 @@ export default class HomeFeed extends Component {
           fetchFailed: true,
         })
       })
-
   }
 
   getItemKey(item) {

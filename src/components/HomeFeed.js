@@ -40,14 +40,14 @@ export default class HomeFeed extends Component {
   }
 
   fetchTrendingGifs() {
-    GiphyClient.trending()
+    GiphyClient.trending({ limit: 50 })
       .then(response => this.onFetchGifsSuccess(response.data))
       .catch(error => this.onFetchGifsFailure(error));
   }
 
   fetchMITGifs() {
     const searchQuery = 'Massachusetts Institute of Technology';
-    GiphyClient.search(searchQuery)
+    GiphyClient.search({ q: searchQuery, limit: 50 })
       .then(response => this.onFetchGifsSuccess(response.data))
       .catch(error => this.onFetchGifsFailure(error));
   }
@@ -113,7 +113,7 @@ export default class HomeFeed extends Component {
     const { gifData } = this.state;
     return (
       <GifList
-        limit={10}
+        limit={30}
         data={gifData}
       />
     );

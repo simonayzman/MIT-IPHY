@@ -18,11 +18,15 @@ export default class GifList extends Component {
       PropTypes.shape({
         id: PropTypes.string.isRequired,
         images: PropTypes.shape({
-          fixed_width: PropTypes.shape({
+          fixed_width_small: PropTypes.shape({
             url: PropTypes.string.isRequired,
+            width: PropTypes.string.isRequired,
+            height: PropTypes.string.isRequired,
           }).isRequired,
-          fixed_width_still: PropTypes.shape({
+          fixed_width_small_still: PropTypes.shape({
             url: PropTypes.string.isRequired,
+            width: PropTypes.string.isRequired,
+            height: PropTypes.string.isRequired,
           }).isRequired,
         }).isRequired,
       })
@@ -30,7 +34,7 @@ export default class GifList extends Component {
   }
 
   static defaultProps = {
-    limit: 20,
+    limit: 21,
     data: [],
   };
 
@@ -39,17 +43,18 @@ export default class GifList extends Component {
   }
 
   renderItem = ({ item }) => { // notice difference function declaration style
-    const { images: { fixed_width, fixed_width_still } } = item;
-    const url = Platform.OS === 'ios' ? fixed_width.url : fixed_width_still.url;
-    return this.renderGif(url);
-  }
-
-  renderGif(url) {
+    const { images: { fixed_width_small, fixed_width_small_still } } = item;
+    const imageVersion = Platform.OS === 'ios' ? fixed_width_small : fixed_width_small_still;
+    const { url, width, height } = imageVersion;
+    const dimensions = {
+      width: parseInt(width),
+      height: parseInt(height),
+    };
     return (
       <View style={styles.cell}>
         <Image
           source={{ uri: url }}
-          style={styles.gif}
+          style={dimensions}
           resizeMode={'contain'}
         />
       </View>
@@ -61,6 +66,7 @@ export default class GifList extends Component {
     const limitedData = data.slice(0, limit);
     return (
       <FlatList
+        numColumns={3}
         keyExtractor={this.getItemKey}
         renderItem={this.renderItem}
         data={limitedData}
@@ -74,12 +80,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   cell: {
-    flex: 1,
+    alignSelf: 'center',
     marginHorizontal: margins.HORIZONTAL.GUTTER,
-    marginVertical: 3,
-  },
-  gif: {
-    width: 300,
-    height: 200,
+    marginVertical: 5,
   },
 });

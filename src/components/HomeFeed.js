@@ -55,6 +55,7 @@ export default class HomeFeed extends Component {
   }
 
   onFetchGifsSuccess(gifData) {
+    console.log('Gif data fetch successful: ', gifData);
     this.setState({
       fetching: false,
       gifData,
@@ -71,9 +72,7 @@ export default class HomeFeed extends Component {
 
   onPressHeader = () => {
     const { showsTrendingData } = this.state;
-    this.setState({
-      showsTrendingData: !showsTrendingData,
-    });
+    this.setState({ showsTrendingData: !showsTrendingData });
     this.fetchGifs(!showsTrendingData);
   }
 

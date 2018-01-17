@@ -5,6 +5,7 @@ import {
   Text,
   Image,
   ActivityIndicator,
+  TouchableOpacity,
 } from 'react-native';
 
 import { colors, margins } from '../lib/styles';
@@ -17,6 +18,7 @@ export default class HomeFeed extends Component {
     super();
 
     this.state = {
+      showsTrendingData: true,
       fetching: false,
       fetchFailed: false,
       gifData: [],
@@ -24,32 +26,71 @@ export default class HomeFeed extends Component {
   }
 
   componentDidMount() {
-    this.setState({
-      fetching: true,
-    });
+    const { showsTrendingData } = this.state;
+    this.fetchGifs(showsTrendingData);
+  }
 
+  fetchGifs(trending) {
+    this.setState({ fetching: true });
+    if (trending) {
+      this.fetchTrendingGifs();
+    } else {
+      this.fetchMITGifs();
+    }
+  }
+
+  fetchTrendingGifs() {
     GiphyClient.trending()
-      .then(response => {
-        console.log(response);
-        this.setState({
-          fetching: false,
-          gifData: response.data,
-        });
-      })
-      .catch(error => {
-        console.warn(error);
-        this.setState({
-          fetching: false,
-          fetchFailed: true,
-        })
-      })
+      .then(response => this.onFetchGifsSuccess(response.data))
+      .catch(error => this.onFetchGifsFailure(error));
+  }
+
+  fetchMITGifs() {
+    const searchQuery = 'Massachusetts Institute of Technology';
+    GiphyClient.search(searchQuery)
+      .then(response => this.onFetchGifsSuccess(response.data))
+      .catch(error => this.onFetchGifsFailure(error));
+  }
+
+  onFetchGifsSuccess(gifData) {
+    this.setState({
+      fetching: false,
+      gifData,
+    });
+  }
+
+  onFetchGifsFailure(error) {
+    console.warn(error);
+    this.setState({
+      fetching: false,
+      fetchFailed: true,
+    });
+  }
+
+  onPressHeader = () => {
+    const { showsTrendingData } = this.state;
+    this.setState({
+      showsTrendingData: !showsTrendingData,
+    });
+    this.fetchGifs(!showsTrendingData);
   }
 
   renderHeader() {
+    const { showsTrendingData } = this.state;
+    let mitStyle = showsTrendingData ? styles.unselectedHeaderText : styles.selectedHeaderText;
+    let giphyStyle = showsTrendingData ? styles.selectedHeaderText : styles.unselectedHeaderText;
     return (
-      <View style={styles.header}>
-        <Text style={styles.headerText}>MIT-IPHY</Text>
-      </View>
+      <TouchableOpacity
+        style={styles.header}
+        onPress={this.onPressHeader}
+        activeOpacity={0.8}
+      >
+        <Text style={styles.headerText}>
+          <Text style={mitStyle}>MIT</Text>
+          <Text>-</Text>
+          <Text style={giphyStyle}>IPHY</Text>
+        </Text>
+      </TouchableOpacity>
     );
   }
 
@@ -132,6 +173,12 @@ const styles = StyleSheet.create({
       width: 2,
       height: 2,
     }
+  },
+  selectedHeaderText: {
+    color: colors.MIT.DARK_GRAY,
+  },
+  unselectedHeaderText: {
+    color: colors.MIT.RED,
   },
   failureGif: {
     width: 400,

@@ -6,6 +6,7 @@ const colors = {
   },
   MISCELLANEOUS: {
     CHARCOAL: '#36454F',
+    OFF_BLACK: '#111111',
   },
 };
 

@@ -77,19 +77,26 @@ export default class HomeFeed extends Component {
 
   renderHeader() {
     const { showsTrendingData } = this.state;
-    let mitStyle = showsTrendingData ? styles.unselectedHeaderText : styles.selectedHeaderText;
-    let giphyStyle = showsTrendingData ? styles.selectedHeaderText : styles.unselectedHeaderText;
+    let logoSource;
+    let logoStyle;
+    if (showsTrendingData) {
+      logoSource = require('../images/giphy-logo.png');
+      logoStyle = styles.giphyLogo;
+    } else {
+      logoSource = require('../images/mit-logo.png');
+      logoStyle = styles.mitLogo;
+    }
     return (
       <TouchableOpacity
         style={styles.header}
         onPress={this.onPressHeader}
-        activeOpacity={0.8}
+        activeOpacity={0.7}
       >
-        <Text style={styles.headerText}>
-          <Text style={mitStyle}>MIT</Text>
-          <Text>-</Text>
-          <Text style={giphyStyle}>IPHY</Text>
-        </Text>
+        <Image
+          source={logoSource}
+          style={logoStyle}
+          resizeMode={'contain'}
+        />
       </TouchableOpacity>
     );
   }
@@ -99,11 +106,9 @@ export default class HomeFeed extends Component {
   }
 
   renderFailureGif() {
-    const failureGifUrl = 'https://media3.giphy.com/media/9J7tdYltWyXIY/giphy.gif';
     return (
       <Image
-        source={{ uri: failureGifUrl }}
-        style={styles.failureGif}
+        source={require('../images/not-found.gif')}
         resizeMode={'contain'}
       />
     )
@@ -121,11 +126,14 @@ export default class HomeFeed extends Component {
 
   renderFooter() {
     return (
-      <Image
-        source={require('../images/powered_by_giphy.gif')}
-        style={styles.giphyAttribution}
-        resizeMode={'contain'}
-      />
+      <View style={styles.footer}>
+        <Text style={styles.footerText}>Powered by </Text>
+        <Image
+          source={require('../images/giphy-name-inverted.png')}
+          style={styles.giphyAttribution}
+          resizeMode={'contain'}
+        />
+      </View>
     );
   }
 
@@ -157,37 +165,36 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   header: {
+    flexDirection: 'row',
     alignItems: 'center',
-    borderWidth: 10,
+    justifyContent: 'center',
+    borderBottomWidth: 10,
+    borderColor: colors.MIT.RED,
+    paddingBottom: 10,
     marginTop: margins.VERTICAL.STATUS_BAR,
     marginBottom: margins.VERTICAL.LARGE,
-    borderColor: colors.MIT.RED,
   },
-  headerText: {
-    color: colors.MIT.RED,
-    fontSize: 65,
+  mitLogo: {
+    width: 194, // 800 original
+    height: 100, // 414 original
+  },
+  giphyLogo: {
+    width: 83, // 152 original
+    height: 100, // 184 original
+  },
+  footer: {
+    marginTop: margins.VERTICAL.MEDIUM,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  footerText: {
+    color: 'white',
+    fontSize: 20,
     fontWeight: 'bold',
-    textShadowColor: 'black',
-    textShadowRadius: 1,
-    textShadowOffset: {
-      width: 2,
-      height: 2,
-    }
-  },
-  selectedHeaderText: {
-    color: colors.MIT.DARK_GRAY,
-  },
-  unselectedHeaderText: {
-    color: colors.MIT.RED,
-  },
-  failureGif: {
-    width: 400,
-    height: 500,
   },
   giphyAttribution: {
-    marginTop: margins.VERTICAL.LARGE,
-    height: 50,
-    width: 350,
-    alignSelf: 'center',
+    height: 38,
+    width: 100,
   },
 });

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {
   StyleSheet,
-  View,
+  TouchableOpacity,
   FlatList,
   Image,
   Platform,
@@ -31,11 +31,13 @@ export default class GifList extends Component {
         }).isRequired,
       })
     ).isRequired,
+    onPress: PropTypes.func,
   }
 
   static defaultProps = {
     limit: 21,
     data: [],
+    onPress: () => {},
   };
 
   getItemKey(item) {
@@ -51,13 +53,16 @@ export default class GifList extends Component {
       height: parseInt(height),
     };
     return (
-      <View style={styles.cell}>
+      <TouchableOpacity
+        style={styles.cell}
+        onPress={() => this.props.onPress(item)}
+      >
         <Image
           source={{ uri: url }}
           style={dimensions}
           resizeMode={'contain'}
         />
-      </View>
+      </TouchableOpacity>
     );
   }
 

@@ -7,6 +7,7 @@ import {
   ActivityIndicator,
   TouchableOpacity,
   LayoutAnimation,
+  Share,
 } from 'react-native';
 
 import { colors, margins } from '../lib/styles';
@@ -76,6 +77,10 @@ export default class HomeFeed extends Component {
     this.fetchGifs(!showsTrendingData);
   }
 
+  onPressGif = (gif) => {
+    Share.share({ message: `Check out this awesome gif I found! ${gif.url}` });
+  }
+
   renderHeader() {
     const { showsTrendingData } = this.state;
     let logoSource;
@@ -121,6 +126,7 @@ export default class HomeFeed extends Component {
       <GifList
         limit={30}
         data={gifData}
+        onPress={this.onPressGif}
       />
     );
   }

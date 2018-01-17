@@ -6,6 +6,7 @@ import {
   Image,
   ActivityIndicator,
   TouchableOpacity,
+  LayoutAnimation,
 } from 'react-native';
 
 import { colors, margins } from '../lib/styles';
@@ -37,6 +38,7 @@ export default class HomeFeed extends Component {
     } else {
       this.fetchMITGifs();
     }
+    LayoutAnimation.easeInEaseOut();
   }
 
   fetchTrendingGifs() {

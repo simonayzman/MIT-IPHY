@@ -4,7 +4,7 @@ _This project was bootstrapped with [Create React Native App](https://github.com
 
 ### Introduction
 
-MIT-IPHY is a React Native demo application, serving as an MIT focused adapation of a feed of gifs, supplied by Giphy. You can follow along the gradual buildup of code by checking out the code in stages. First, install the Expo app on your smartphone. Then, start by running the following commands in your terminal:
+MIT-IPHY is a React Native demo application, serving as an MIT focused adapation of a feed of gifs, supplied by Giphy. For more guidance, information, and links, check out [the sister presentation for this repo](https://docs.google.com/presentation/d/1VfOOCfF9K4qcX-X_JT_YsUNoI-FHeB9B75dnZgt6WOU/edit?usp=sharing). You can follow along the gradual buildup of code by checking out the code in stages. First, install the Expo app on your smartphone. Then, start by running the following commands in your terminal:
 
 ```
 $ yarn install
